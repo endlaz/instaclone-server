@@ -12,8 +12,21 @@ app.use(corsMiddleware, bodyParser);
 
 // Database
 const db = require('./db');
+const bcrypt = require('bcrypt');
+const User = require('./user/userModel');
 db.sync({force: true})
     .then(() => {
-        console.log('Database connected')
+        console.log('Database connected');
+        // Add/create a default user for testing
+        User.create({
+            email: "test@test.com",
+            password: bcrypt.hashSync("123456", 10),
+            name: "Test user",
+            bio: "Welcome to my InstaClone profile"
+        })
     })
     .catch(console.error);
+
+// Routes
+const userRouter = require('./user/userRouter');
+app.use(userRouter);
