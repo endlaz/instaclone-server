@@ -28,5 +28,6 @@ db.sync({force: true})
     .catch(console.error);
 
 // Routes
+const authRouter = require('./auth/router');
 const userRouter = require('./user/userRouter');
-app.use(userRouter);
+app.use(authRouter, userRouter);
