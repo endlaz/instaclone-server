@@ -21,6 +21,7 @@ db.sync({force: true})
         User.create({
             email: "test@test.com",
             password: bcrypt.hashSync("123456", 10),
+            username: "AwesomeUsername",
             name: "Test user",
             bio: "Welcome to my InstaClone profile"
         })
