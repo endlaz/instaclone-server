@@ -2,6 +2,9 @@ const { Router } = require('express');
 const User = require('./userModel');
 const router = new Router();
 const bcrypt = require('bcrypt');
+const db = require('../db');
+const auth = require('../auth/middleware');
+const { toData } = require('../auth/jwt');
 
 // Create new user
 router.post('/user', (req, res, next) => {
@@ -49,6 +52,43 @@ router.post('/user', (req, res, next) => {
             .catch(console.error);
     } else {
         res.status(400).send({ "message": "Not all data provided" });
+    }
+});
+
+// Get feed of a user
+// Feed only shows posts from users whom the user is following
+router.get('/user/:id/feed', auth, (req, res, next) => {
+    // Split auth type and token from header
+    const auth = req.headers.authorization && req.headers.authorization.split(' ');
+    // Convert token to readable data and store only the userId in a var
+    const loggedUserId = toData(auth[1]).userId;
+    // (Try to) Convert the request URL param id into a number
+    const userId = parseInt(req.params.id);
+
+    // Check if converted URL param is a valid number
+    if (userId !== 'NaN' && userId > 0) {
+        // Check if the request feed belongs to the logged in user
+        if (userId === loggedUserId) {
+            // Select all the posts from users that the logged in user is following
+            const query = `SELECT username, posts.* FROM users
+                INNER JOIN user_relations ur ON users.id=ur.followed_id
+                INNER JOIN posts ON posts."userId"=ur.followed_id
+                WHERE ur.follower_id=${userId}
+                ORDER BY "createdAt" DESC`;
+            db.query(query)
+                .then(result => {
+                    // Send the array of object back as the response
+                    res.status(200).send(result[0]);
+                });
+        } else {
+            // Request feed does not belong to logged in user
+            // Request/Access denied
+            res.status(401).end();
+        }
+    } else {
+        // The url param id was not a valid number
+        // Respond with a 400 bad request status
+        res.status(400).end();
     }
 });
 
