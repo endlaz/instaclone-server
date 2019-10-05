@@ -3,6 +3,7 @@ const Post = require('./postModel');
 const User = require('../user/userModel');
 const router = new Router();
 const { io } = require('../server');
+const auth = require('../auth/middleware');
 
 // All posts
 router.get('/posts', (req, res, next) => {
@@ -23,23 +24,12 @@ router.get('/posts', (req, res, next) => {
         .catch(console.error)
 });
 
-router.post('/posts', (req, res, next) => {
+router.post('/post', auth, (req, res, next) => {
     if (req.body.picture) {
-        Post.create({ ...req.body, userId: 1 })
-            .then(result => {
-                return Post.findOne({
-                    where: { id: result.id },
-                    include: [
-                        {
-                            model: User,
-                            attributes: ['username', 'avatar']
-                        }
-                    ]
-                })
-            })
+        Post.create(req.body)
             .then(result => {
                 res.status(201).send(result);
-                io.emit("feed", result);
+                io.emit("postAdded", '');
             });
     } else {
         res.status(400).end();
