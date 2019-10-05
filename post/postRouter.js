@@ -4,12 +4,14 @@ const User = require('../user/userModel');
 const router = new Router();
 const { io } = require('../server');
 
-// Create new user
+// All posts
 router.get('/posts', (req, res, next) => {
     Post.findAll({
         include: [
-            {model: User,
-                attributes: ['username', 'avatar']}
+            {
+                model: User,
+                attributes: ['username', 'avatar']
+            }
         ],
         order: [
             ['createdAt', 'DESC']
@@ -23,13 +25,15 @@ router.get('/posts', (req, res, next) => {
 
 router.post('/posts', (req, res, next) => {
     if (req.body.picture) {
-        Post.create({...req.body, userId: 1})
+        Post.create({ ...req.body, userId: 1 })
             .then(result => {
                 return Post.findOne({
-                    where: {id: result.id},
+                    where: { id: result.id },
                     include: [
-                        {model: User,
-                            attributes: ['username', 'avatar']}
+                        {
+                            model: User,
+                            attributes: ['username', 'avatar']
+                        }
                     ]
                 })
             })
