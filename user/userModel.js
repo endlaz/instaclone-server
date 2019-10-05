@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
+const Post = require('../post/postModel');
 
 const User = db.define('users', {
     email: {
@@ -23,8 +24,11 @@ const User = db.define('users', {
         type: Sequelize.TEXT
     },
     avatar: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        defaultValue: "https://avatars3.githubusercontent.com/u/54072649?s=460&v=4"
     }
 });
+User.hasMany(Post);
+Post.belongsTo(User);
 
 module.exports = User;

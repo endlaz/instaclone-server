@@ -16,6 +16,9 @@ const Post = db.define('posts', {
         defaultValue: 0
     }
 });
-Post.belongsTo(User);
+
+// A Post belongs to a user. A user can have many posts
+// This 1-many relation is made with .belongsTo and .hasMany in file:
+// ../user/userModel.js
 
 module.exports = Post

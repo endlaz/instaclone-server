@@ -1,10 +1,12 @@
 const { Router } = require('express');
 const User = require('./userModel');
+const Post = require('../post/postModel');
 const router = new Router();
 const bcrypt = require('bcrypt');
 const db = require('../db');
 const auth = require('../auth/middleware');
 const { toData } = require('../auth/jwt');
+const Sequelize = require('sequelize');
 
 // Create new user
 router.post('/user', (req, res, next) => {
@@ -33,7 +35,7 @@ router.post('/user', (req, res, next) => {
             // Email not in use, check username
             .then(() => {
                 return User.findOne({
-                    where: { username },
+                    where: { username: { [Sequelize.Op.iLike]: username } },
                     attributes: ['username']
                 })
             })
@@ -54,6 +56,31 @@ router.post('/user', (req, res, next) => {
         res.status(400).send({ "message": "Not all data provided" });
     }
 });
+
+// Get user profile
+router.get('/user/:username', (req, res, next) => {
+    const username = req.params.username.replace(/[^a-zA-Z0-9_.-]/g,'');
+    console.log(username)
+    User.findOne({
+        where: {
+            username: { [Sequelize.Op.iLike]: username }
+        },
+        include: [
+            { model: Post }
+        ],
+        attributes: {
+            exclude: ['password']
+        }
+    })
+    .then(result => {
+        if(result) {
+            res.status(200).send(result);
+        } else {
+            res.status(404).end();
+        }
+    })
+    .catch(error => console.error)
+})
 
 // Get feed of a user
 // Feed only shows posts from users whom the user is following
