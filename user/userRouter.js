@@ -122,7 +122,7 @@ router.get('/user/:id/feed', auth, (req, res, next) => {
     }
 });
 
-router.get('/user/:username/following', (req, res, next) => {
+router.get('/user/:username/following', auth, (req, res, next) => {
     const username = req.params.username.replace(/[^a-zA-Z0-9_.-]/g,'');
     User.findOne({
         where: {
@@ -138,7 +138,7 @@ router.get('/user/:username/following', (req, res, next) => {
     })
 })
 
-router.get('/user/:username/followers', (req, res, next) => {
+router.get('/user/:username/followers', auth, (req, res, next) => {
     const username = req.params.username.replace(/[^a-zA-Z0-9_.-]/g,'');
     User.findOne({
         where: {
