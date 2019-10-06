@@ -56,6 +56,10 @@ db.sync({ force: true })
             follower_id: 1,
             followed_id: 3
         });
+        await UserRelation.create({
+            follower_id: 2,
+            followed_id: 1
+        });
         await Post.create({
             picture: "https://thenypost.files.wordpress.com/2019/09/instagram-private-stories-01.jpg?quality=90&strip=all&w=618&h=410&crop=1",
             description: "Some random image from the web",

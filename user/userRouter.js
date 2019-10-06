@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const User = require('./userModel');
+const userRelation = require('./userRelationModel');
 const Post = require('../post/postModel');
 const router = new Router();
 const bcrypt = require('bcrypt');
@@ -65,12 +66,14 @@ router.get('/user/:username', (req, res, next) => {
         where: {
             username: { [Sequelize.Op.iLike]: username }
         },
-        include: [
-            { model: Post }
-        ],
         attributes: {
             exclude: ['password']
-        }
+        },
+        include: [
+            { model: Post },
+            { model: User, as: 'following', attributes: ['id']},
+            { model: User, as: 'followers', attributes: ['id']}
+        ]
     })
     .then(result => {
         if(result) {
@@ -79,7 +82,7 @@ router.get('/user/:username', (req, res, next) => {
             res.status(404).end();
         }
     })
-    .catch(error => console.error)
+    .catch(console.error)
 })
 
 // Get feed of a user
@@ -119,4 +122,35 @@ router.get('/user/:id/feed', auth, (req, res, next) => {
     }
 });
 
+router.get('/user/:username/following', (req, res, next) => {
+    const username = req.params.username.replace(/[^a-zA-Z0-9_.-]/g,'');
+    User.findOne({
+        where: {
+            username: { [Sequelize.Op.iLike]: username }
+        },
+        attributes: ['username'],
+        include: [
+            { model: User, as: 'following', attributes: ['avatar', 'username']},
+        ]
+    })
+    .then(result => {
+        res.send(result)
+    })
+})
+
+router.get('/user/:username/followers', (req, res, next) => {
+    const username = req.params.username.replace(/[^a-zA-Z0-9_.-]/g,'');
+    User.findOne({
+        where: {
+            username: { [Sequelize.Op.iLike]: username }
+        },
+        attributes: ['username'],
+        include: [
+            { model: User, as: 'followers', attributes: ['avatar', 'username']}
+        ]
+    })
+    .then(result => {
+        res.send(result)
+    })
+})
 module.exports = router;
