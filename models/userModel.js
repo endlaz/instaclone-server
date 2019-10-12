@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
-const Post = require('../post/postModel');
+const Post = require('./postModel');
 const userRelation = require('./userRelationModel');
 
 const User = db.define('users', {
