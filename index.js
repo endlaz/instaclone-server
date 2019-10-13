@@ -24,6 +24,7 @@ const Post = require('./models/postModel');
 // After we imported the necessary files in each file we can use db.sync to create all the tables and data
 // But if we put db.sync in the db.js file, we'll get a order problem. It's like: who was first? The chicken or the egg?
 // If you don't want to insert any default data into your database, then you can put the db.sync inside your db.js file
+// Force: true is still there for my testing purposes. If i change server code, i don't want to insert all the default data again, so i overwrite everything. The default data contains all data for testing
 db.sync({ force: true })
 	.then(async () => {
 		console.log('Database connected');
