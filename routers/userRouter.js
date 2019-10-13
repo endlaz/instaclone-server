@@ -72,6 +72,10 @@ router.get('/user/:id/feed/page/:num', auth, async (req, res, next) => {
 	if (userId !== 'NaN' && userId > 0) {
 		// Check if the request feed belongs to the logged in user
 		if (userId === loggedUserId) {
+			//Pagination setup
+			// I'm not going to explaining this in the source code
+			// This is some basic logic. Try to understand it by yourself.
+			// If you get stuck for too long, you can ask for an explanation
 			const page = parseInt(req.params.num) - 1 || 0;
 			const limit = 5;
 			let offset = 0;
