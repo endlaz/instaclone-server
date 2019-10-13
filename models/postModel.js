@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
-const User = require('./userModel');
 
 const Post = db.define('posts', {
     picture: {
@@ -18,7 +17,7 @@ const Post = db.define('posts', {
 });
 
 // A Post belongs to a user. A user can have many posts
-// This 1-many relation is made with .belongsTo and .hasMany in file:
-// ../user/userModel.js
+// This 1-to-many relation is made with .belongsTo and .hasMany in file:
+// ./userModel.js
 
 module.exports = Post

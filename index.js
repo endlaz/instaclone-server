@@ -16,6 +16,14 @@ const bcrypt = require('bcrypt');
 const User = require('./models/userModel');
 const UserRelation = require('./models/userRelationModel');
 const Post = require('./models/postModel');
+// Why is db.sync not inside the db.js file?
+// To add/create default data in the database after the database is sync, we need the models
+// But to be able to setup/define the models, we need the database
+// In other words, to create the tables we need to import db.js inside any model.js file
+// And to use model.create we need to import any model.js inside db.js
+// After we imported the necessary files in each file we can use db.sync to create all the tables and data
+// But if we put db.sync in the db.js file, we'll get a order problem. It's like: who was first? The chicken or the egg?
+// If you don't want to insert any default data into your database, then you can put the db.sync inside your db.js file
 db.sync({ force: true })
 	.then(async () => {
 		console.log('Database connected');
@@ -60,12 +68,57 @@ db.sync({ force: true })
 		});
 		await Post.create({
 			picture: "https://thenypost.files.wordpress.com/2019/09/instagram-private-stories-01.jpg?quality=90&strip=all&w=618&h=410&crop=1",
-			description: "Another random but the same image from the web",
+			description: "Post 1",
 			userId: 2
 		});
 		await Post.create({
 			picture: "https://petapixel.com/assets/uploads/2019/06/manipulatedelephant-800x534.jpg",
-			description: "Another random but the same image from the web",
+			description: "Post 2",
+			userId: 2
+		});
+		await Post.create({
+			picture: "https://petapixel.com/assets/uploads/2019/06/manipulatedelephant-800x534.jpg",
+			description: "Post 3",
+			userId: 2
+		});
+		await Post.create({
+			picture: "https://petapixel.com/assets/uploads/2019/06/manipulatedelephant-800x534.jpg",
+			description: "Post 4",
+			userId: 2
+		});
+		await Post.create({
+			picture: "https://petapixel.com/assets/uploads/2019/06/manipulatedelephant-800x534.jpg",
+			description: "Post 5",
+			userId: 2
+		});
+		await Post.create({
+			picture: "https://petapixel.com/assets/uploads/2019/06/manipulatedelephant-800x534.jpg",
+			description: "Post 6",
+			userId: 2
+		});
+		await Post.create({
+			picture: "https://petapixel.com/assets/uploads/2019/06/manipulatedelephant-800x534.jpg",
+			description: "Post 7",
+			userId: 2
+		});
+		await Post.create({
+			picture: "https://petapixel.com/assets/uploads/2019/06/manipulatedelephant-800x534.jpg",
+			description: "Post 8",
+			userId: 2
+		});
+		await Post.create({
+			picture: "https://petapixel.com/assets/uploads/2019/06/manipulatedelephant-800x534.jpg",
+			description: "Post 9",
+			userId: 2
+		});
+		await Post.create({
+			picture: "https://petapixel.com/assets/uploads/2019/06/manipulatedelephant-800x534.jpg",
+			description: "Post 10",
+			userId: 2
+		});
+		await Post.create({
+			picture: "https://petapixel.com/assets/uploads/2019/06/manipulatedelephant-800x534.jpg",
+			description: "Post 11",
 			userId: 2
 		});
 	})

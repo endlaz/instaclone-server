@@ -31,7 +31,7 @@ function identity(req, res, next) {
         })
         .catch(next)
     } catch {
-      // Could not decode the jwt token
+      // Could not decode the jwt token or execute sql query
       res.locals.identity = 'anonymous';
       next();
     }
