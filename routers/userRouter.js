@@ -60,28 +60,23 @@ router.post('/user', (req, res, next) => {
 
 // GET FEED OF USER
 // Feed only shows posts from users whom the user is following
-router.get('/user/:id/feed/page/:num', auth, async (req, res, next) => {
-	// Split auth type and token from header
-	const auth = req.headers.authorization && req.headers.authorization.split(' ');
-	// Convert token to readable data and store only the userId in a var
-	const loggedUserId = toData(auth[1]).userId;
+router.get('/user/:id/feed', auth, async (req, res, next) => {
 	// Convert the request URL param id into a number
 	const userId = parseInt(req.params.id);
 
 	// Check if converted URL param is a valid number
-	if (userId !== 'NaN' && userId > 0) {
+	if (userId > 0) {
 		// Check if the request feed belongs to the logged in user
-		if (userId === loggedUserId) {
+		if (userId === req.user.id) {
 			//Pagination setup
 			// I'm not going to explaining this in the source code
 			// This is some basic logic. Try to understand it by yourself.
 			// If you get stuck for too long, you can ask for an explanation
-			const page = parseInt(req.params.num) - 1 || 0;
+			const page = parseInt(req.query.page) || 1;
 			const limit = 5;
 			let offset = 0;
-			if (page >= 1) {
-				// offset = 2 * 5 = 10
-				offset = page * limit;
+			if (page > 1) {
+				offset = (page - 1) * limit;
 			}
 			// Select all the posts from users that the logged in user is following
 			const query = `SELECT username, posts.* FROM users
