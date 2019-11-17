@@ -79,11 +79,13 @@ router.get('/user/:id/feed', auth, async (req, res, next) => {
 				offset = (page - 1) * limit;
 			}
 			// Select all the posts from users that the logged in user is following
-			const query = `SELECT username, posts.* FROM users
+			const query = `SELECT username, posts.*, count(comments.*) as comments FROM users
                 INNER JOIN user_relations ur ON users.id=ur.followed_id
-                INNER JOIN posts ON posts."userId"=ur.followed_id
+								INNER JOIN posts ON posts."userId"=ur.followed_id
+								LEFT JOIN comments ON comments."postId"=posts.id
 								WHERE ur.follower_id=${userId}
-								ORDER BY "createdAt" DESC
+								GROUP BY username, posts.id
+								ORDER BY posts."createdAt" DESC
 								OFFSET ${offset} LIMIT ${limit}`;
 			const feed = await db.query(query);
 
