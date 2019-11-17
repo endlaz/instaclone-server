@@ -16,6 +16,8 @@ const bcrypt = require('bcrypt');
 const User = require('./models/userModel');
 const UserRelation = require('./models/userRelationModel');
 const Post = require('./models/postModel');
+const Comment = require('./models/commentModel');
+require('./models/modelRelations');
 // Why is db.sync not inside the db.js file?
 // To add/create default data in the database after the database is sync, we need the models
 // But to be able to setup/define the models, we need the database

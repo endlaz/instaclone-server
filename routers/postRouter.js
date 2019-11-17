@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const Post = require('../models/postModel');
 const User = require('../models/userModel');
+const Comment = require('../models/commentModel');
 const router = new Router();
 const auth = require('../middleware/authMiddleware');
 
@@ -35,5 +36,22 @@ router.post('/post', auth, (req, res, next) => {
 		res.status(400).end();
 	}
 })
+
+ // Add comment to a post
+ router.post('/post/:id/comment', auth, (req, res, next) => {
+	const comment = req.body.comment; 
+	const postId = req.params.id;
+	const userId = req.user.id;
+
+	if (comment) {
+		Comment.create({comment, postId, userId})
+			.then(() => {
+				res.status(201).send({ message: "Comment added" });
+			})
+			.catch(next);
+	} else {
+		res.status(400).send({ message: "Can't add an empty comment" });
+	}
+ })
 
 module.exports = router;
